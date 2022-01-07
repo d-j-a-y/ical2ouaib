@@ -25,6 +25,7 @@
  */
 
 require_once "./lib/zapcallib.php";
+//~ require_once "./lib/cyclodalib.php";  TODO
 
 Class Cyclo {
     const SUMM      = "SUMMARY";
@@ -34,46 +35,37 @@ Class Cyclo {
     
 }
 
-function cyclo_timeIspast($date)
-{
-    //check datehelper funct
-    $maintenant = new DateTime();
-}
-
-function cyclo_Formatevent($event)
+function cyclo_formatEvent($event)
 {
     echo "Action n°X: (" . $event[Cyclo::STATUS] . ") \"" . $event[Cyclo::SUMM] . "\" du " . $event[Cyclo::START] . " au " . $event[Cyclo::END] . "</br>";
 }
 
 
-function cyclo_Formatcalendar($calendar_table)
+function cyclo_formatCalendar($calendar_table)
 {
+    ksort($calendar_table, SORT_NUMERIC);
     foreach ($calendar_table as $key => $event) {
-        cyclo_Formatevent($event);
+        cyclo_formatEvent($event);
     }
 }
 
 
 function cyclo_formatTimezone($key, $val)
 {
-    //~ global $local_timezone;
     $local_timezone = "Europe/Paris";
     $time_format = "Y-m-d H:i:s";
 
     if ($key === "DTSTART" || $key === "DTEND") {
 
         if (8 == strlen($val)) {
-            //assume whole day
+            //no start time, assume whole day
             $time_format = "Y-m-d";
         }
         // Convert Date/Time from UTC to Local Time
         date_default_timezone_set("UTC");
 
         $datetime = new DateTime($val);
-        if (
-            $datetime === false ||
-            $datetime->getLastErrors()["warning_count"] != 0
-        ) {
+        if ($datetime === false || $datetime->getLastErrors()["warning_count"] != 0) {
             return "ERR:" . $key . $val;
         }
         $local_time = new DateTimeZone($local_timezone);
@@ -99,12 +91,12 @@ function cyclo_getValue($value)
     }
 }
 
-function cyclo_parse_calendar($icalobj)
+function cyclo_getEvents($icalobj)
 {
     $ecount = 0;
     $events_table = array();
 
-    // read back icalendar data that was just parsed
+    // read back icalendar, extract event
     if (isset($icalobj->tree->child)) {
         foreach ($icalobj->tree->child as $node) {
             if ($node->getName() == "VEVENT") {
@@ -112,7 +104,6 @@ function cyclo_parse_calendar($icalobj)
                 $event_status = 'TODO';
                 $ecount++;
                 foreach ($node->data as $key => $value) {
-                    //                                        echo " ---";
                     $event_value = cyclo_getValue($value);
                     switch ($key) {
                         case "SUMMARY":
@@ -144,7 +135,7 @@ function cyclo_parse_calendar($icalobj)
     return $events_table;
 }
 
-function cyclo_calendarDump($icalobj)
+function cyclo_dumpCalendar($icalobj)
 {
     // read back icalendar data that was just parsed
     if (isset($icalobj->tree->child)) {
@@ -169,13 +160,7 @@ function cyclo_calendarDump($icalobj)
 
 function cyclo_getGet()
 {
-    // Show all URL parameters (and
-    // all form data submitted via the
-    // 'get' method)
-    foreach ($_GET as $key => $value) {
-        echo $key, " => ", $value, "<br/>";
-    }
-
+    // URL parameters (and all form data submitted via the 'get' method)
     // Show a particular value.
     $id = $_GET["calendar"];
 
@@ -189,35 +174,48 @@ function cyclo_getGet()
     return false;
 }
 
+function cyclo_getAgenda($icalfile)
+{
+    $icalfeed = file_get_contents($icalfile);
+    // create the ical object
+    $icalobj = new ZCiCal($icalfeed);
+    return $icalobj;
+}
+
+function cyclo_getAgendaBricoVelo()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/P7c5bbRpegLAmGFd?export"; //FIXME geturls from php call 
+    return cyclo_getAgenda($icalfile);
+}
+
+function cyclo_getAgendaUnivCA()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/zwe6fDZSE6EceySH?export";
+    return cyclo_getAgenda($icalfile);
+}
+
+/*****************************************************************************/
+
 $onlybv = cyclo_getGet();
 
-$icalfile = "https://framagenda.org/remote.php/dav/public-calendars/P7c5bbRpegLAmGFd?export"; //FIXME geturls from php call 
-$icalfeed = file_get_contents($icalfile);
-
-// create the ical object
-$icalobj = new ZCiCal($icalfeed);
+$icalobj = cyclo_getAgendaBricoVelo();
 
 echo "<h2>BricoVélo</h2>";
 echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
 
-$calendar_table = cyclo_parse_calendar($icalobj);
-cyclo_Formatcalendar($calendar_table);
+$calendar_table = cyclo_getEvents($icalobj);
+cyclo_formatCalendar($calendar_table);
 //~ print_r($calendar_table);
 
 if ($onlybv) die();
 
+$icalobj = cyclo_getAgendaUnivCA();
+
 echo "</br></br></br><h2>Univ</h2>";
-
-$icalfile = "https://framagenda.org/remote.php/dav/public-calendars/zwe6fDZSE6EceySH?export";
-$icalfeed = file_get_contents($icalfile);
-
-// create the ical object
-$icalobj = new ZCiCal($icalfeed);
-
 echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
 
-$calendar_table = cyclo_parse_calendar($icalobj);
-cyclo_Formatcalendar($calendar_table);
+$calendar_table = cyclo_getEvents($icalobj);
+cyclo_formatCalendar($calendar_table);
 
 echo "</br>--------------------------------------------------------------------------</br>";
-cyclo_calendarDump($icalobj);
+cyclo_dumpCalendar($icalobj);
