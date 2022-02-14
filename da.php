@@ -122,6 +122,10 @@ function cyclo_getEvents($icalobj)
                             $event_end = cyclo_formatTimezone($key, $event_value);
 
                             break;
+                        case "LOCATION":
+                            break;
+                        case "DESCRIPTION":
+                            break;
                     }
                 }
                 $events_table[$key_primary] = array (Cyclo::SUMM => $event_summary,
