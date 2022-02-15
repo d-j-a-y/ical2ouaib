@@ -61,24 +61,78 @@ function cyclo_getAgendaUnivCA()
 
 /*****************************************************************************/
 
+?>
 
-$icalobj = cyclo_getAgendaBricoVelo();
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <link href='js/fullcalendar/main.css' rel='stylesheet' />
+    <script src='js/fullcalendar/main.js'></script>
 
-echo "<h2>Bric0Vél0</h2>";
-echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
 
-$calendar_table = cyclo_getEvents($icalobj);
-cyclo_formatCalendar($calendar_table);
+
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth'
+        });
+        
+      calendar.addEvent({ title: 'new event', start: '2022-02-09' });
+
+        
+        calendar.render();
+
+
+      document.getElementById('prev').addEventListener('click', function() {
+        calendar.prev(); // call method
+      });
+
+      document.getElementById('next').addEventListener('click', function() {
+        calendar.next(); // call method
+      });
+
+
+      });
+
+    </script>
+
+
+
+
+
+  </head>
+  <body>
+
+    <div id='calendar'></div>
+
+    </br>--------------------------------------------------------------------------</br>    
+    <?php 
+
+//~ $icalobj = cyclo_getAgendaBricoVelo();
+
+//~ echo "<h2>Bric0Vél0</h2>";
+//~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+
+//~ $calendar_table = cyclo_getEvents($icalobj);
+//~ cyclo_formatCalendar($calendar_table);
 //~ print_r($calendar_table);
 
 
-$icalobj = cyclo_getAgendaUnivCA();
+        $icalobj = cyclo_getAgendaUnivCA();
 
-echo "</br></br></br><h2>Univ</h2>";
-echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+        echo "</br></br></br><h2>Univ</h2>";
+        echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
 
-$calendar_table = cyclo_getEvents($icalobj);
-cyclo_formatCalendar($calendar_table);
+        $calendar_table = cyclo_getEvents($icalobj);
+        
+        //~ cyclo_formatCalendar($calendar_table);
+    
+        cyclo_dumpCalendar($icalobj); 
+    ?>
 
-echo "</br>--------------------------------------------------------------------------</br>";
-cyclo_dumpCalendar($icalobj);
+  </body>
+</html>
