@@ -86,6 +86,56 @@ function cyclo_getValue($value)
     }
 }
 
+function cyclo_getEvent($icalobj, $eindex)
+{
+    //~ $eindex = "parcours chateau";
+    //~ return $eindex;
+
+     $events_table = array();
+
+    // read back icalendar, extract event
+    if (isset($icalobj->tree->child)) {
+        $node = $icalobj->tree->child[1];
+        if ($node->getName() == "VEVENT") {
+            $event_summary = "";
+            $event_status = 'TODO';
+            $ecount++;
+            foreach ($node->data as $key => $value) {
+                $event_value = cyclo_getValue($value);
+                switch ($key) {
+                    case "SUMMARY":
+                        $event_summary = $event_value;
+
+                        break;
+                    case "DTSTART":
+                        $key_primary = ZDateHelper::fromiCaltoUnixDateTime($event_value);
+                        $event_start = cyclo_formatTimezone($key, $event_value);
+
+                        break;
+                    case "DTEND":
+                        if (ZDateHelper::isPast(ZDateHelper::fromiCaltoUnixDateTime($event_value), "Europe/Paris")) {
+                            $event_status = 'DONE';
+                        }
+                        $event_end = cyclo_formatTimezone($key, $event_value);
+
+                        break;
+                    case "LOCATION":
+                        break;
+                    case "DESCRIPTION":
+                        break;
+                }
+            }
+            $events_table = array (Cyclo::SUMM => $event_summary,
+                                                 Cyclo::START => $event_start,
+                                                 Cyclo::END => $event_end,
+                                                 Cyclo::STATUS => $event_status);
+            //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
+        }
+    }
+    
+    return $events_table;
+}
+
 function cyclo_getEvents($icalobj)
 {
     $ecount = 0;

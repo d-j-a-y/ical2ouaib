@@ -73,66 +73,66 @@ function cyclo_getAgendaUnivCA()
 
 
 
-    <script>
+    <script  type='text/javascript'>
+        window.calendar = null;
+        const prout = 51;
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            window.calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth'
+            });
+        
+            window.calendar.addEvent({ title: 'new event', start: '2022-02-09' });
+      
+            <?php
+                $icalobj = cyclo_getAgendaUnivCA();
+                //~ echo "</br></br></br><h2>Univ</h2>";
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            var event = <?php echo json_encode($calendar_table); ?>;
+        
+            varvarvar = Object.keys(event);
+            for (var i = 0; i < varvarvar.length; i++)
+                window.calendar.addEvent({ title: event[varvarvar[i]].SUMMARY, start: event[varvarvar[i]].DTSTART }); 
 
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth'
+            window.calendar.render();
+
+
+      //~ document.getElementById('prev').addEventListener('click', function() {
+        //~ calendar.prev(); // call method
+      //~ });
+
+      //~ document.getElementById('next').addEventListener('click', function() {
+        //~ calendar.next(); // call method
+      //~ });
+
+
         });
-        
-      calendar.addEvent({ title: 'new event', start: '2022-02-09' });
-
-        
-        calendar.render();
-
-
-      document.getElementById('prev').addEventListener('click', function() {
-        calendar.prev(); // call method
-      });
-
-      document.getElementById('next').addEventListener('click', function() {
-        calendar.next(); // call method
-      });
-
-
-      });
 
     </script>
-
-
-
-
 
   </head>
   <body>
 
+
     <div id='calendar'></div>
 
     </br>--------------------------------------------------------------------------</br>    
-    <?php 
-
-//~ $icalobj = cyclo_getAgendaBricoVelo();
-
-//~ echo "<h2>Bric0Vél0</h2>";
-//~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
-
-//~ $calendar_table = cyclo_getEvents($icalobj);
-//~ cyclo_formatCalendar($calendar_table);
-//~ print_r($calendar_table);
-
-
-        $icalobj = cyclo_getAgendaUnivCA();
-
-        echo "</br></br></br><h2>Univ</h2>";
-        echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
-
-        $calendar_table = cyclo_getEvents($icalobj);
+<!--
+    <script type='text/javascript'> 
+        console.log(prout);
+        if (typeof window.calendar != "undefined") {
+            console.log(typeof window.calendar);
+            console.log("!=");
+            console.log(window.calendar.entries());
+        }else{
+            console.log("undefined");
+            console.log("==");
+            }
+    </script>
+-->
         
-        //~ cyclo_formatCalendar($calendar_table);
-    
-        cyclo_dumpCalendar($icalobj); 
-    ?>
 
   </body>
 </html>
