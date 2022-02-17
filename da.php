@@ -21,7 +21,8 @@
  * TODO
  * FullCalendar and multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
  * Use fullcalendar keywords -title.start...- directly in cyclodalib???
- * 
+ * Remplace getAgendaXXX fnct by table [name/url/color]
+ * Remove some locale from fullcalen???
  */
 
 require_once "./lib/zapcallib.php";
@@ -56,6 +57,24 @@ function cyclo_getAgendaBricoVelo()
 function cyclo_getAgendaUnivCA()
 {
     $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/zwe6fDZSE6EceySH?export";
+    return cyclo_getAgenda($icalfile);
+}
+
+function cyclo_getAgendaMontjoye()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/SLBHLRPTdzLXoJRZ?export";
+    return cyclo_getAgenda($icalfile);
+}
+
+function cyclo_getAgendaNissaBici22()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/2rCjNqKjCEpNcYAG?export";
+    return cyclo_getAgenda($icalfile);
+}
+
+function cyclo_getAgendaAutres()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/pTos79jcpPyjHogB?export";
     return cyclo_getAgenda($icalfile);
 }
 
@@ -116,19 +135,77 @@ function cyclo_getAgendaUnivCA()
                 }
             });
         
-            window.calendar.addEvent({ title: 'new event', start: '2022-02-09' });
-      
+
+            /* UNIV NCA */
             <?php
                 $icalobj = cyclo_getAgendaUnivCA();
-                //~ echo "</br></br></br><h2>Univ</h2>";
                 //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
                 $calendar_table = cyclo_getEvents($icalobj);
             ?>
-            var event = <?php echo json_encode($calendar_table); ?>;
-        
-            varvarvar = Object.keys(event);
-            for (var i = 0; i < varvarvar.length; i++)
-                window.calendar.addEvent({ title: event[varvarvar[i]].SUMMARY, start: event[varvarvar[i]].DTSTART }); 
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                eventsKeys = Object.keys(events);
+
+                for (var i = 0; i < eventsKeys.length; i++)
+                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'red' }); 
+            }
+
+            /* BV Moulins */
+            <?php
+                $icalobj = cyclo_getAgendaBricoVelo();
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                eventsKeys = Object.keys(events);
+
+                for (var i = 0; i < eventsKeys.length; i++)
+                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'blue' }); 
+            }
+
+            /* DV Monjoye */
+            <?php
+                $icalobj = cyclo_getAgendaMontjoye();
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                eventsKeys = Object.keys(events);
+
+                for (var i = 0; i < eventsKeys.length; i++)
+                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'green' }); 
+            }
+
+            /* NissaBici 22 */
+            <?php
+                $icalobj = cyclo_getAgendaNissaBici22();
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                eventsKeys = Object.keys(events);
+
+                for (var i = 0; i < eventsKeys.length; i++)
+                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'purple' }); 
+            }
+
+            /* Autres 22 */
+            <?php
+                $icalobj = cyclo_getAgendaAutres();
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                eventsKeys = Object.keys(events);
+
+                for (var i = 0; i < eventsKeys.length; i++)
+                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'orange' }); 
+            }
+
 
             window.calendar.render();
 
@@ -148,7 +225,6 @@ function cyclo_getAgendaUnivCA()
 
         <div id='calendar'></div>
     </div>
-    </br>--------------------------------------------------------------------------</br>    
     <script type='text/javascript'> 
         console.log(patapouf);
         //~ if (typeof window.calendar != "undefined") {
