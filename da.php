@@ -18,9 +18,9 @@
  */
 
 /**
- * 
- * 
- * 
+ * TODO
+ * FullCalendar and multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
+ * Use fullcalendar keywords -title.start...- directly in cyclodalib???
  * 
  */
 
@@ -67,19 +67,53 @@ function cyclo_getAgendaUnivCA()
 <html lang='en'>
   <head>
     <meta charset='utf-8' />
-    <link href='js/fullcalendar/main.css' rel='stylesheet' />
-    <script src='js/fullcalendar/main.js'></script>
+    <link href='./js/fullcalendar/main.css' rel='stylesheet' />
+    <script src='./js/fullcalendar/main.js'></script>
 
+<style>
 
+  html, body {
+    font-size: 14px;
+    background: #e2e2e2;
+  }
+
+  #calendar{
+    width: 80%;
+    margin-left: 100px;
+    box-shadow: 0px 0px 10px #000;
+    padding:15px; 
+    background: #fff;
+  }
+
+  #calendar-container {
+    position: fixed;
+    top: 0%;
+    text-align: center;
+    left: 10%;
+    right: 10%;
+    bottom: 20%;
+  }
+
+</style>
 
 
     <script  type='text/javascript'>
         window.calendar = null;
-        const prout = 51;
+        const patapouf = 51;
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             window.calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                buttonText: {
+                    today:    'Aujourd\'hui',
+                    month:    'Mois',
+                    week:     'Semaine',
+                    day:      'Jour',
+                    list:     'Liste',
+                    //~ next:     'Mois suivant',
+                    //~ prev: 'Mois précédent',
+                }
             });
         
             window.calendar.addEvent({ title: 'new event', start: '2022-02-09' });
@@ -98,14 +132,9 @@ function cyclo_getAgendaUnivCA()
 
             window.calendar.render();
 
-
-      //~ document.getElementById('prev').addEventListener('click', function() {
-        //~ calendar.prev(); // call method
-      //~ });
-
-      //~ document.getElementById('next').addEventListener('click', function() {
-        //~ calendar.next(); // call method
-      //~ });
+            //~ document.getElementById('next').addEventListener('click', function() {
+                //~ calendar.next(); // call method
+            //~ });
 
 
         });
@@ -115,23 +144,22 @@ function cyclo_getAgendaUnivCA()
   </head>
   <body>
 
+    <div id='calendar-container'>
 
-    <div id='calendar'></div>
-
+        <div id='calendar'></div>
+    </div>
     </br>--------------------------------------------------------------------------</br>    
-<!--
     <script type='text/javascript'> 
-        console.log(prout);
-        if (typeof window.calendar != "undefined") {
-            console.log(typeof window.calendar);
-            console.log("!=");
-            console.log(window.calendar.entries());
-        }else{
-            console.log("undefined");
-            console.log("==");
-            }
+        console.log(patapouf);
+        //~ if (typeof window.calendar != "undefined") {
+            //~ console.log(typeof window.calendar);
+            //~ console.log("!=");
+            //~ console.log(window.calendar.entries());
+        //~ }else{
+            //~ console.log("undefined");
+            //~ console.log("==");
+            //~ }
     </script>
--->
         
 
   </body>
