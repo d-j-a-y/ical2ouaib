@@ -155,12 +155,12 @@ function cyclo_getAgendaAutres()
 
 
             if (false){
-                //~ window.calendar.addEvent({ title: 'my recurring event', rrule: 'DTSTART:20220201T103000Z\nRRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' , color:'red' }); 
-                window.calendar.addEvent({ title: 'my recurring event', rrule: 'DTSTART:20220425T140000Z\nFREQ=WEEKLY;COUNT=11;BYDAY=MO' , color:'red' }); 
-                //~ window.calendar.addEvent({ title: 'my recurring event',  
-                                            //~ start: '20220425T140000' , 
-                                            //~ rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' , 
-                                            //~ color:'red' }); 
+                window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nRRULE:FREQ=WEEKLY;COUNT=11;BYDAY=MO\nEXDATE:20220502T140000Z' , color:'red' }); 
+                //~ window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nFREQ=WEEKLY;COUNT=11;BYDAY=MO' , color:'red' }); 
+                //~ window.calendar.addEvent({ title: 'recurring test',
+                                            //~ start: '20220425T140000' ,
+                                            //~ rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' ,
+                                            //~ color:'red' });
             }
 
             /* UNIV NCA */

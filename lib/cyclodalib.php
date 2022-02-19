@@ -36,8 +36,9 @@ Class CycloICAL {
     const END       = "DTEND";
     const STATUS    = "STATUS";
     const RULES     = "RRULE";
-    const LOC     = "LOCATION";
-    const DESC     = "DESCRIPTION";
+    const EXDAT     = "EXDATE";
+    const LOC       = "LOCATION";
+    const DESC      = "DESCRIPTION";
 }
 
 function cyclo_formatEvent($event)
@@ -165,6 +166,7 @@ function cyclo_getEvents($icalobj)
         foreach ($icalobj->tree->child as $node) {
             if ($node->getName() == "VEVENT") {
                 $event_rrule = "";
+                $event_exdate = "";
                 $event_end = "";
                 $event_start = "";
                 $event_rawstart= "";
@@ -188,12 +190,16 @@ function cyclo_getEvents($icalobj)
                             $event_rawstart = $event_value;
 
                             break;
+                            /* FIXME - event status outdated? */
                         case CycloICAL::END:
                             if (ZDateHelper::isPast(ZDateHelper::fromiCaltoUnixDateTime($event_value), "Europe/Paris")) {
                                 $event_status = 'DONE';
                             }
                             $event_end = cyclo_formatTimezone($key, $event_value);
 
+                            break;
+                        case CycloICAL::EXDAT:
+                            $event_exdate = $event_value;
                             break;
                         case CycloICAL::LOC:
                             break;
@@ -203,6 +209,8 @@ function cyclo_getEvents($icalobj)
                 }
                 if ($event_rrule != "") {
                   $event_rrule = CycloICAL::START . ":" . $event_rawstart . "Z\n". $event_rrule;
+                  if ($event_exdate != "")
+                      $event_rrule = $event_rrule . "\n" . CycloICAL::EXDAT . ":" . $event_exdate . "Z";
                 }
                 $events_table[$key_primary] = array (Cyclo::SUMM => $event_summary,
                                                      Cyclo::START => $event_start,
