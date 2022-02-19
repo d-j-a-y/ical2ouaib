@@ -125,6 +125,18 @@ function cyclo_getAgendaAutres()
     <script  type='text/javascript'>
         window.calendar = null;
         const patapouf = 51;
+
+        function cycloaddevent(evt, cal, col){
+            eventsKeys = Object.keys(evt);
+
+            //~ console.log(events[eventsKeys[1]].RRULE);
+            for (var i = 0; i < eventsKeys.length; i++)
+                if(events[eventsKeys[i]].RRULE)
+                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY, rrule: evt[eventsKeys[i]].RRULE , color:col });
+                else
+                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY, start: evt[eventsKeys[i]].DTSTART , color:col });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             window.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -159,10 +171,7 @@ function cyclo_getAgendaAutres()
             ?>
             {
                 events = <?php echo json_encode($calendar_table); ?>;
-                eventsKeys = Object.keys(events);
-
-                for (var i = 0; i < eventsKeys.length; i++)
-                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'red' }); 
+                cycloaddevent(events, window.calendar, "red");
             }
 
             /* BV Moulins */
@@ -173,10 +182,7 @@ function cyclo_getAgendaAutres()
             ?>
             {
                 events = <?php echo json_encode($calendar_table); ?>;
-                eventsKeys = Object.keys(events);
-
-                for (var i = 0; i < eventsKeys.length; i++)
-                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'blue' }); 
+                cycloaddevent(events, window.calendar, "blue");
             }
 
             /* DV Monjoye */
@@ -191,14 +197,7 @@ function cyclo_getAgendaAutres()
                 //~ console.log(datadump);
 
                 events = <?php echo json_encode($calendar_table); ?>;
-                eventsKeys = Object.keys(events);
-
-                console.log(events[eventsKeys[1]].RRULE);
-                for (var i = 0; i < eventsKeys.length; i++)
-                    if(events[eventsKeys[i]].RRULE)
-                        window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, rrule: events[eventsKeys[i]].RRULE , color:'yellow' }); 
-                    else
-                        window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'green' }); 
+                cycloaddevent(events, window.calendar, "green");
             }
 
             /* NissaBici 22 */
@@ -209,10 +208,7 @@ function cyclo_getAgendaAutres()
             ?>
             {
                 events = <?php echo json_encode($calendar_table); ?>;
-                eventsKeys = Object.keys(events);
-
-                for (var i = 0; i < eventsKeys.length; i++)
-                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'purple' }); 
+                cycloaddevent(events, window.calendar, "purple");
             }
 
             /* Autres 22 */
@@ -223,10 +219,7 @@ function cyclo_getAgendaAutres()
             ?>
             {
                 events = <?php echo json_encode($calendar_table); ?>;
-                eventsKeys = Object.keys(events);
-
-                for (var i = 0; i < eventsKeys.length; i++)
-                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'orange' }); 
+                cycloaddevent(events, window.calendar, "orange");
             }
 
 
