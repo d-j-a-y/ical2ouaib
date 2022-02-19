@@ -27,7 +27,17 @@ Class Cyclo {
     const START     = "DTSTART";
     const END       = "DTEND";
     const STATUS    = "STATUS";
-    
+    const RULES     = "RRULE";
+}
+
+Class CycloICAL {
+    const SUMM      = "SUMMARY";
+    const START     = "DTSTART";
+    const END       = "DTEND";
+    const STATUS    = "STATUS";
+    const RULES     = "RRULE";
+    const LOC     = "LOCATION";
+    const DESC     = "DESCRIPTION";
 }
 
 function cyclo_formatEvent($event)
@@ -85,7 +95,7 @@ function cyclo_getValue($value)
         return $value->getValues();
     }
 }
-
+/* WIP eindex not used*/
 function cyclo_getEvent($icalobj, $eindex)
 {
     //~ $eindex = "parcours chateau";
@@ -95,40 +105,49 @@ function cyclo_getEvent($icalobj, $eindex)
 
     // read back icalendar, extract event
     if (isset($icalobj->tree->child)) {
-        $node = $icalobj->tree->child[1];
+        $node = $icalobj->tree->child[1];//fixme
         if ($node->getName() == "VEVENT") {
+            $event_rrule = "";
+            $event_end = "";
+            $event_start = "";
             $event_summary = "";
             $event_status = 'TODO';
             $ecount++;
             foreach ($node->data as $key => $value) {
                 $event_value = cyclo_getValue($value);
                 switch ($key) {
-                    case "SUMMARY":
+                    case CycloICAL::SUMM:
                         $event_summary = $event_value;
 
                         break;
-                    case "DTSTART":
+                    case CycloICAL::RULES:
+                        $event_rrule = $event_value;
+
+                        break;
+                    case CycloICAL::START:
                         $key_primary = ZDateHelper::fromiCaltoUnixDateTime($event_value);
                         $event_start = cyclo_formatTimezone($key, $event_value);
 
                         break;
-                    case "DTEND":
+                    case CycloICAL::END:
                         if (ZDateHelper::isPast(ZDateHelper::fromiCaltoUnixDateTime($event_value), "Europe/Paris")) {
                             $event_status = 'DONE';
                         }
                         $event_end = cyclo_formatTimezone($key, $event_value);
 
                         break;
-                    case "LOCATION":
+                    case CycloICAL::LOC:
                         break;
-                    case "DESCRIPTION":
+                    case CycloICAL::DESC:
                         break;
                 }
             }
+
             $events_table = array (Cyclo::SUMM => $event_summary,
-                                                 Cyclo::START => $event_start,
-                                                 Cyclo::END => $event_end,
-                                                 Cyclo::STATUS => $event_status);
+                                   Cyclo::START => $event_start,
+                                   Cyclo::END => $event_end,
+                                   Cyclo::RULES => $event_rrule,
+                                   Cyclo::STATUS => $event_status);
             //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
         }
     }
@@ -145,37 +164,50 @@ function cyclo_getEvents($icalobj)
     if (isset($icalobj->tree->child)) {
         foreach ($icalobj->tree->child as $node) {
             if ($node->getName() == "VEVENT") {
+                $event_rrule = "";
+                $event_end = "";
+                $event_start = "";
+                $event_rawstart= "";
                 $event_summary = "";
                 $event_status = 'TODO';
                 $ecount++;
                 foreach ($node->data as $key => $value) {
                     $event_value = cyclo_getValue($value);
                     switch ($key) {
-                        case "SUMMARY":
+                        case CycloICAL::SUMM:
                             $event_summary = $event_value;
 
                             break;
-                        case "DTSTART":
-                            $key_primary = ZDateHelper::fromiCaltoUnixDateTime($event_value);
-                            $event_start = cyclo_formatTimezone($key, $event_value);
+                        case CycloICAL::RULES:
+                            $event_rrule = $event_value;
 
                             break;
-                        case "DTEND":
+                        case CycloICAL::START:
+                            $key_primary = ZDateHelper::fromiCaltoUnixDateTime($event_value);
+                            $event_start = cyclo_formatTimezone($key, $event_value);
+                            $event_rawstart = $event_value;
+
+                            break;
+                        case CycloICAL::END:
                             if (ZDateHelper::isPast(ZDateHelper::fromiCaltoUnixDateTime($event_value), "Europe/Paris")) {
                                 $event_status = 'DONE';
                             }
                             $event_end = cyclo_formatTimezone($key, $event_value);
 
                             break;
-                        case "LOCATION":
+                        case CycloICAL::LOC:
                             break;
-                        case "DESCRIPTION":
+                        case CycloICAL::DESC:
                             break;
                     }
+                }
+                if ($event_rrule != "") {
+                  $event_rrule = CycloICAL::START . ":" . $event_rawstart . "Z\n". $event_rrule;
                 }
                 $events_table[$key_primary] = array (Cyclo::SUMM => $event_summary,
                                                      Cyclo::START => $event_start,
                                                      Cyclo::END => $event_end,
+                                                     Cyclo::RULES => $event_rrule,
                                                      Cyclo::STATUS => $event_status);
                 //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
             }
@@ -194,23 +226,27 @@ function cyclo_getAgenda($icalfile)
 
 function cyclo_dumpCalendar($icalobj)
 {
+    $datadump = "";
     // read back icalendar data that was just parsed
     if (isset($icalobj->tree->child)) {
         foreach ($icalobj->tree->child as $node) {
             if ($node->getName() == "VEVENT") {
                 $ecount++;
-                echo "Event $ecount:\n";
+                //~ echo "Event $ecount:\n";
                 foreach ($node->data as $key => $value) {
                     if (is_array($value)) {
                         for ($i = 0; $i < count($value); $i++) {
                             $p = $value[$i]->getParameters();
-                            echo "  $key: " . $value[$i]->getValues() . "</br>";
+                            //~ echo "  $key: " . $value[$i]->getValues() . "</br>";
+                            $datadump = $datadump . "  $key: " . $value[$i]->getValues() . "</br>";
                         }
                     } else {
-                        echo "  $key: " . $value->getValues() . "</br>";
+                        //~ echo "  $key: " . $value->getValues() . "</br>";
+                        $datadump = $datadump . "  $key: " . $value->getValues() . "</br>";
                     }
                 }
             }
         }
     }
+    return $datadump;
 }

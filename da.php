@@ -18,6 +18,9 @@
  */
 
 /**
+ * FIXME
+ * les evenements repetif ne sont pas répété!
+ * 
  * TODO
  * FullCalendar and multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
  * Use fullcalendar keywords -title.start...- directly in cyclodalib???
@@ -87,7 +90,10 @@ function cyclo_getAgendaAutres()
   <head>
     <meta charset='utf-8' />
     <link href='./js/fullcalendar/main.css' rel='stylesheet' />
+
     <script src='./js/fullcalendar/main.js'></script>
+    <script src='./js/rrule/rrule-tz.min.js'></script>
+    <script src='./js/fullcalendar/rruleconnector/main.global.min.js'></script>
 
 <style>
 
@@ -134,7 +140,16 @@ function cyclo_getAgendaAutres()
                     //~ prev: 'Mois précédent',
                 }
             });
-        
+
+
+            if (false){
+                //~ window.calendar.addEvent({ title: 'my recurring event', rrule: 'DTSTART:20220201T103000Z\nRRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' , color:'red' }); 
+                window.calendar.addEvent({ title: 'my recurring event', rrule: 'DTSTART:20220425T140000Z\nFREQ=WEEKLY;COUNT=11;BYDAY=MO' , color:'red' }); 
+                //~ window.calendar.addEvent({ title: 'my recurring event',  
+                                            //~ start: '20220425T140000' , 
+                                            //~ rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' , 
+                                            //~ color:'red' }); 
+            }
 
             /* UNIV NCA */
             <?php
@@ -169,13 +184,21 @@ function cyclo_getAgendaAutres()
                 $icalobj = cyclo_getAgendaMontjoye();
                 //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
                 $calendar_table = cyclo_getEvents($icalobj);
+                //~ $calendar_data = cyclo_dumpCalendar($icalobj);
             ?>
             {
+                //~ datadump = <?php echo json_encode($calendar_data); ?>;
+                //~ console.log(datadump);
+
                 events = <?php echo json_encode($calendar_table); ?>;
                 eventsKeys = Object.keys(events);
 
+                console.log(events[eventsKeys[1]].RRULE);
                 for (var i = 0; i < eventsKeys.length; i++)
-                    window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'green' }); 
+                    if(events[eventsKeys[i]].RRULE)
+                        window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, rrule: events[eventsKeys[i]].RRULE , color:'yellow' }); 
+                    else
+                        window.calendar.addEvent({ title: events[eventsKeys[i]].SUMMARY, start: events[eventsKeys[i]].DTSTART , color:'green' }); 
             }
 
             /* NissaBici 22 */
