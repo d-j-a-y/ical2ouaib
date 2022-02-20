@@ -12,17 +12,12 @@
 /**
  * Parse cyclotrope iCalendars and display somehow
  *
- * Enter a calendar name on the URL ( cyclotrope.net/agen/da.php?calendar=name ),
- * or leave blank to parse all calendars.
- *
  */
 
 /**
- * FIXME
- * les evenements repetif ne sont pas répété!
- * 
  * TODO
- * FullCalendar and multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
+ * da.css
+ * multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
  * Use fullcalendar keywords -title.start...- directly in cyclodalib???
  * Remplace getAgendaXXX fnct by table [name/url/color]
  * Remove some locale from fullcalen???
@@ -95,51 +90,77 @@ function cyclo_getAgendaAutres()
     <script src='./js/rrule/rrule-tz.min.js'></script>
     <script src='./js/fullcalendar/rruleconnector/main.global.min.js'></script>
 
-<style>
+    <style>
+      html, body {
+        font-size: 14px;
+        background: #e2e2e2;
+      }
 
-  html, body {
-    font-size: 14px;
-    background: #e2e2e2;
-  }
+      #calendar {
+        width: 80%;
+        margin-left: 100px;
+        box-shadow: 0px 0px 10px #000;
+        padding:15px;
+        background: #fff;
+      }
 
-  #calendar{
-    width: 80%;
-    margin-left: 100px;
-    box-shadow: 0px 0px 10px #000;
-    padding:15px; 
-    background: #fff;
-  }
+      #calendar-container {
+        position: fixed;
+        top: 0%;
+        text-align: center;
+        left: 10%;
+        right: 10%;
+        bottom: 20%;
+      }
 
-  #calendar-container {
-    position: fixed;
-    top: 0%;
-    text-align: center;
-    left: 10%;
-    right: 10%;
-    bottom: 20%;
-  }
+      .fc-day-past{
+        background: repeating-linear-gradient(
+          -45deg,
+          #aa6dbc,
+          #aa6dbc 0.5em,
+          #125298 0.5em,
+          #465298 4em
+        );
+      }
 
-</style>
+      .fc-day-sun {
+        background: repeating-linear-gradient(
+            45deg,
+            #606dbc,
+            #606dbc 10px,
+            #465298 10px,
+            #465298 20px
+          );
+      }
 
+      .fc-day-today {
+         background: unset;
+      }
+    </style>
 
     <script  type='text/javascript'>
         window.calendar = null;
-        const patapouf = 51;
+        const patapouf = 51; //DEBUG
 
         function cycloaddevent(evt, cal, col){
             eventsKeys = Object.keys(evt);
-
-            //~ console.log(events[eventsKeys[1]].RRULE);
+//~ console.log(events[eventsKeys[1]].RRULE); //DEBUG
             for (var i = 0; i < eventsKeys.length; i++)
                 if(events[eventsKeys[i]].RRULE)
-                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY, rrule: evt[eventsKeys[i]].RRULE , color:col });
+                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY,
+                                   rrule: evt[eventsKeys[i]].RRULE,
+                                   color:col });
                 else
-                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY, start: evt[eventsKeys[i]].DTSTART , color:col });
+                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY,
+                                   start: evt[eventsKeys[i]].DTSTART,
+                                   end: evt[eventsKeys[i]].DTEND,
+                                   color:col });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             window.calendar = new FullCalendar.Calendar(calendarEl, {
+                firstDay: 1,    //Monday
                 initialView: 'dayGridMonth',
                 locale: 'fr',
                 buttonText: {
@@ -153,14 +174,9 @@ function cyclo_getAgendaAutres()
                 }
             });
 
-
-            if (false){
-                window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nRRULE:FREQ=WEEKLY;COUNT=11;BYDAY=MO\nEXDATE:20220502T140000Z' , color:'red' }); 
+            if (false){ //TEST
+                //~ window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nRRULE:FREQ=WEEKLY;COUNT=11;BYDAY=MO\nEXDATE:20220502T140000Z' , color:'red' }); 
                 //~ window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nFREQ=WEEKLY;COUNT=11;BYDAY=MO' , color:'red' }); 
-                //~ window.calendar.addEvent({ title: 'recurring test',
-                                            //~ start: '20220425T140000' ,
-                                            //~ rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=5;UNTIL=20220601;BYDAY=MO,FR' ,
-                                            //~ color:'red' });
             }
 
             /* UNIV NCA */
@@ -190,12 +206,8 @@ function cyclo_getAgendaAutres()
                 $icalobj = cyclo_getAgendaMontjoye();
                 //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
                 $calendar_table = cyclo_getEvents($icalobj);
-                //~ $calendar_data = cyclo_dumpCalendar($icalobj);
             ?>
             {
-                //~ datadump = <?php echo json_encode($calendar_data); ?>;
-                //~ console.log(datadump);
-
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "green");
             }
@@ -216,43 +228,30 @@ function cyclo_getAgendaAutres()
                 $icalobj = cyclo_getAgendaAutres();
                 //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
                 $calendar_table = cyclo_getEvents($icalobj);
+//~ $calendar_data = cyclo_dumpCalendar($icalobj); //DEBUG
             ?>
             {
+//~ datadump = <?php echo json_encode($calendar_data); ?>; //DEBUG
+//~ console.log(datadump); //DEBUG
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "orange");
             }
-
 
             window.calendar.render();
 
             //~ document.getElementById('next').addEventListener('click', function() {
                 //~ calendar.next(); // call method
             //~ });
-
-
         });
 
     </script>
-
   </head>
   <body>
-
     <div id='calendar-container'>
-
         <div id='calendar'></div>
     </div>
     <script type='text/javascript'> 
         console.log(patapouf);
-        //~ if (typeof window.calendar != "undefined") {
-            //~ console.log(typeof window.calendar);
-            //~ console.log("!=");
-            //~ console.log(window.calendar.entries());
-        //~ }else{
-            //~ console.log("undefined");
-            //~ console.log("==");
-            //~ }
     </script>
-        
-
   </body>
 </html>

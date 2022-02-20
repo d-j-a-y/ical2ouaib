@@ -208,9 +208,10 @@ function cyclo_getEvents($icalobj)
                     }
                 }
                 if ($event_rrule != "") {
-                  $event_rrule = CycloICAL::START . ":" . $event_rawstart . "Z\n". $event_rrule;
-                  if ($event_exdate != "")
-                      $event_rrule = $event_rrule . "\n" . CycloICAL::EXDAT . ":" . $event_exdate . "Z";
+                    $event_rrule = CycloICAL::START . ":" . $event_rawstart . "Z\n". $event_rrule;
+                    if ($event_exdate != "") {
+                        $event_rrule = $event_rrule . "\n" . CycloICAL::EXDAT . ":" . $event_exdate . "Z";
+                    }
                 }
                 $events_table[$key_primary] = array (Cyclo::SUMM => $event_summary,
                                                      Cyclo::START => $event_start,
