@@ -91,51 +91,58 @@ function cyclo_getAgendaAutres()
     <script src='./js/fullcalendar/rruleconnector/main.global.min.js'></script>
 
     <style>
-      html, body {
+    html, body {
         font-size: 14px;
         background: #e2e2e2;
-      }
+    }
 
-      #calendar {
+    #calendar {
         width: 80%;
         margin-left: 100px;
         box-shadow: 0px 0px 10px #000;
         padding:15px;
         background: #fff;
-      }
+    }
 
-      #calendar-container {
+    #calendar-container {
         position: fixed;
         top: 0%;
         text-align: center;
         left: 10%;
         right: 10%;
         bottom: 20%;
-      }
+    }
 
-      .fc-day-past{
-        background: repeating-linear-gradient(
-          -45deg,
-          #aa6dbc,
-          #aa6dbc 0.5em,
-          #125298 0.5em,
-          #465298 4em
-        );
-      }
+    .fc-daygrid-day-number{
+        font-size: large;
+    }
 
-      .fc-day-sun {
+    .fc-day-sun {
         background: repeating-linear-gradient(
             45deg,
             #606dbc,
             #606dbc 10px,
-            #465298 10px,
-            #465298 20px
-          );
-      }
+            #4aa2c8 10px,
+            #4aa2c8 20px);
+    }
 
-      .fc-day-today {
-         background: unset;
-      }
+    .fc-col-header-cell{
+        background: #aa6dbc;
+    }
+
+    .fc-day-past{
+        background: repeating-linear-gradient(
+          -45deg,
+          #aa6dbc,
+          #aa6dbc 0.5em,
+          #12c2c8 0.5em,
+          #46c2c8 4em);
+    }
+
+    .fc-day-today {
+        background: unset;
+    }
+
     </style>
 
     <script  type='text/javascript'>
