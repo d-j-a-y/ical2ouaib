@@ -58,7 +58,7 @@ function cyclo_formatCalendar($calendar_table)
 
 function cyclo_formatTimezone($key, $val)
 {
-    $local_timezone = "Europe/Paris";
+//$local_timezone = "Europe/Paris";
     $time_format = "Y-m-d H:i:s";
 
     if ($key === "DTSTART" || $key === "DTEND") {
@@ -74,8 +74,9 @@ function cyclo_formatTimezone($key, $val)
         if ($datetime === false || $datetime->getLastErrors()["warning_count"] != 0) {
             return "ERR:" . $key . $val;
         }
-        $local_time = new DateTimeZone($local_timezone);
-        $datetime->setTimezone($local_time);
+//Already in Eu/Paris... useless.
+//$local_time = new DateTimeZone($local_timezone);
+//$datetime->setTimezone($local_time);
         $val = $datetime->format($time_format);
 
     } else {
@@ -88,7 +89,7 @@ function cyclo_formatTimezone($key, $val)
 function cyclo_getValue($value)
 {
     if (is_array($value)) {
-        for ($i = 0; $i < count($value); $i++) { //FIXME loop is not needed!?
+        for ($i = 0; $i < count($value); $i++) { //FIXME is loop really needed!?
             $p = $value[$i]->getParameters();
             return $value[$i]->getValues();
         }
@@ -218,7 +219,8 @@ function cyclo_getEvents($icalobj)
                                                      Cyclo::END => $event_end,
                                                      Cyclo::RULES => $event_rrule,
                                                      Cyclo::STATUS => $event_status);
-                //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
+//~ DEBUG
+//~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
             }
         }
     }
