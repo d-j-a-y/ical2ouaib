@@ -143,6 +143,30 @@ function cyclo_getAgendaAutres()
         background: unset;
     }
 
+    #main-menu:hover,nav.main-menu.expanded {
+        left:0px;
+        overflow:visible;
+    }
+
+    #main-menu {
+        background:#aa6dbc;
+        box-shadow: 0px 0px 10px #000;
+        position:absolute;
+        top:0;
+        bottom:0;
+        height:100%;
+        left:-230px;
+        width:250px;
+        overflow:hidden;
+        -webkit-transition:left .05s linear;
+        transition:left .05s linear;
+        -webkit-transform:translateZ(0) scale(1,1);
+        z-index:1000;
+    }
+
+    .menu-entry{
+        text-align:right;
+    }
     </style>
 
     <script  type='text/javascript'>
@@ -186,6 +210,8 @@ function cyclo_getAgendaAutres()
                 //~ window.calendar.addEvent({ title: 'recurring test', rrule: 'DTSTART:20220425T140000Z\nFREQ=WEEKLY;COUNT=11;BYDAY=MO' , color:'red' }); 
             }
 
+            var mainmenuEl = document.getElementById('main-menu');
+
             /* UNIV NCA */
             <?php
                 $icalobj = cyclo_getAgendaUnivCA();
@@ -195,6 +221,7 @@ function cyclo_getAgendaAutres()
             {
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "red");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>UnivNCA <span style=\"color: red ; font-size : xx-large\">&#xEFFA</span></div>"
             }
 
             /* BV Moulins */
@@ -206,6 +233,8 @@ function cyclo_getAgendaAutres()
             {
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "blue");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>BV Moulins<span style=\"color: blue ; font-size : xx-large\">&#xEFFA</span></div>"
+
             }
 
             /* DV Monjoye */
@@ -217,6 +246,8 @@ function cyclo_getAgendaAutres()
             {
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "green");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>DV Monjoye <span style=\"color: green ; font-size : xx-large\">&#xEFFA</span></div>"
+
             }
 
             /* NissaBici 22 */
@@ -228,6 +259,8 @@ function cyclo_getAgendaAutres()
             {
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "purple");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>NissaBicy22 <span style=\"color: purple ; font-size : xx-large\">&#xEFFA</span></div>"
+
             }
 
             /* Autres 22 */
@@ -242,6 +275,7 @@ function cyclo_getAgendaAutres()
 //~ console.log(datadump); //DEBUG
                 events = <?php echo json_encode($calendar_table); ?>;
                 cycloaddevent(events, window.calendar, "orange");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>Autres22 <span style=\"color: orange ; font-size : xx-large\">&#xEFFA</span></div>"
             }
 
             window.calendar.render();
@@ -254,6 +288,7 @@ function cyclo_getAgendaAutres()
     </script>
   </head>
   <body>
+      <nav id="main-menu"></nav>
     <div id='calendar-container'>
         <div id='calendar'></div>
     </div>
