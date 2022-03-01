@@ -1,12 +1,12 @@
 <?php
 /**
- * da.php - formelly cyclotrope.net/agen/da.php
+ * da.php - physically cyclotrope.net/agen/da.php
  *
- * @package     cyclotropeLib
+ * @package     ical2ouaib
  * @author      d-j-a-y <https://cyclotrope.net>
  * @copyright   Copyright (C) 2022 by jb aka d-j-a-y
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link
+ * @link        https://github.com/d-j-a-y/ical2ouaib
  */
 
 /**
@@ -16,11 +16,13 @@
 
 /**
  * TODO
+ * dot utf
  * da.css
  * multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
  * Use fullcalendar keywords -title.start...- directly in cyclodalib???
  * Remplace getAgendaXXX fnct by table [name/url/color]
  * Remove some locale from fullcalen???
+ * dependencies version
  */
 
 require_once "./lib/zapcallib.php";
@@ -85,108 +87,18 @@ function cyclo_getAgendaAutres()
   <head>
     <meta charset='utf-8' />
     <link href='./js/fullcalendar/main.css' rel='stylesheet' />
+    <link href='./css/da.css' rel='stylesheet' />
 
     <script src='./js/fullcalendar/main.js'></script>
     <script src='./js/rrule/rrule-tz.min.js'></script>
     <script src='./js/fullcalendar/rruleconnector/main.global.min.js'></script>
 
     <style>
-    html, body {
-        font-size: 14px;
-        background: #e2e2e2;
-    }
-
-    #calendar {
-        width: 80%;
-        margin-left: 100px;
-        box-shadow: 0px 0px 10px #000;
-        padding:15px;
-        background: #fff;
-    }
-
-    #calendar-container {
-        position: fixed;
-        top: 0%;
-        text-align: center;
-        left: 10%;
-        right: 10%;
-        bottom: 20%;
-    }
-
-    .fc-daygrid-day-number{
-        font-size: large;
-    }
-
-    .fc-day-sun {
-        background: repeating-linear-gradient(
-            45deg,
-            #606dbc,
-            #606dbc 10px,
-            #4aa2c8 10px,
-            #4aa2c8 20px);
-    }
-
-    .fc-col-header-cell{
-        background: #aa6dbc;
-    }
-
-    .fc-day-past{
-        background: repeating-linear-gradient(
-          -45deg,
-          #aa6dbc,
-          #aa6dbc 0.5em,
-          #12c2c8 0.5em,
-          #46c2c8 4em);
-    }
-
-    .fc-day-today {
-        background: unset;
-    }
-
-    #main-menu:hover,nav.main-menu.expanded {
-        left:0px;
-        overflow:visible;
-    }
-
-    #main-menu {
-        background:#aa6dbc;
-        box-shadow: 0px 0px 10px #000;
-        position:absolute;
-        top:0;
-        bottom:0;
-        height:100%;
-        left:-230px;
-        width:250px;
-        overflow:hidden;
-        -webkit-transition:left .05s linear;
-        transition:left .05s linear;
-        -webkit-transform:translateZ(0) scale(1,1);
-        z-index:1000;
-    }
-
-    .menu-entry{
-        text-align:right;
-    }
     </style>
 
     <script  type='text/javascript'>
         window.calendar = null;
         const patapouf = 51; //DEBUG
-
-        function cycloaddevent(evt, cal, col){
-            eventsKeys = Object.keys(evt);
-//~ console.log(events[eventsKeys[1]].RRULE); //DEBUG
-            for (var i = 0; i < eventsKeys.length; i++)
-                if(events[eventsKeys[i]].RRULE)
-                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY,
-                                   rrule: evt[eventsKeys[i]].RRULE,
-                                   color:col });
-                else
-                    cal.addEvent({ title: evt[eventsKeys[i]].SUMMARY,
-                                   start: evt[eventsKeys[i]].DTSTART,
-                                   end: evt[eventsKeys[i]].DTEND,
-                                   color:col });
-        }
 
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -202,6 +114,16 @@ function cyclo_getAgendaAutres()
                     list:     'Liste',
                     //~ next:     'Mois suivant',
                     //~ prev: 'Mois précédent',
+                },
+                eventClick: function(info) { //https://fullcalendar.io/docs/eventClick
+                    cyclopopupeventinfo(info.event.title, info.event.extendedProps.description);
+//~ alert(info.event.title + '\n\n' + info.event.extendedProps.description); //DEBUG
+
+//~ alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+//~ alert('View: ' + info.view.type);
+
+                    // change the border color just for fun
+                    //~ info.el.style.borderColor = 'red';
                 }
             });
 
@@ -288,12 +210,25 @@ function cyclo_getAgendaAutres()
     </script>
   </head>
   <body>
-      <nav id="main-menu"></nav>
+    <!-- Event popup info, hidden -->
+    <div id="evtPopup" class="modal">
+      <div class="modal-content">
+        <span class="closemodal">&times;</span>
+        <h3 id="myModalTitle">Some text in the Modal..</h3>
+        <p id="myModalText">Some text in the Modal..</p>
+      </div>
+    </div>
+    <!-- Agenda side bar global info, leftfold -->
+    <nav id="main-menu"></nav>
+    <!-- Main stuff feed by cycloaddevent -->
     <div id='calendar-container'>
         <div id='calendar'></div>
     </div>
+
     <script type='text/javascript'> 
-        console.log(patapouf);
+        console.log(patapouf); //DEBUG
     </script>
+
+    <script src='./js/da.js'></script>
   </body>
 </html>
