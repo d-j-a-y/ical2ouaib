@@ -28,6 +28,8 @@ Class Cyclo {
     const END       = "DTEND";
     const STATUS    = "STATUS";
     const RULES     = "RRULE";
+    const LOC       = "LOCATION";
+    const DESC      = "DESCRIPTION";
 }
 
 Class CycloICAL {
@@ -113,6 +115,8 @@ function cyclo_getEvent($icalobj, $eindex)
             $event_end = "";
             $event_start = "";
             $event_summary = "";
+            $event_loc = "";
+            $event_desc = "";
             $event_status = 'TODO';
             $ecount++;
             foreach ($node->data as $key => $value) {
@@ -139,8 +143,10 @@ function cyclo_getEvent($icalobj, $eindex)
 
                         break;
                     case CycloICAL::LOC:
+                        $event_loc = $event_value;
                         break;
                     case CycloICAL::DESC:
+                        $event_desc = $event_value;
                         break;
                 }
             }
@@ -149,6 +155,8 @@ function cyclo_getEvent($icalobj, $eindex)
                                    Cyclo::START => $event_start,
                                    Cyclo::END => $event_end,
                                    Cyclo::RULES => $event_rrule,
+                                   Cyclo::DESC => $event_desc,
+                                   Cyclo::LOC => $event_loc,
                                    Cyclo::STATUS => $event_status);
             //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
         }
@@ -172,6 +180,8 @@ function cyclo_getEvents($icalobj)
                 $event_start = "";
                 $event_rawstart= "";
                 $event_summary = "";
+                $event_loc = "";
+                $event_desc = "";
                 $event_status = 'TODO';
                 $ecount++;
                 foreach ($node->data as $key => $value) {
@@ -203,8 +213,10 @@ function cyclo_getEvents($icalobj)
                             $event_exdate = $event_value;
                             break;
                         case CycloICAL::LOC:
+                            $event_loc = $event_value;
                             break;
                         case CycloICAL::DESC:
+                            $event_desc = $event_value;
                             break;
                     }
                 }
@@ -218,6 +230,8 @@ function cyclo_getEvents($icalobj)
                                                      Cyclo::START => $event_start,
                                                      Cyclo::END => $event_end,
                                                      Cyclo::RULES => $event_rrule,
+                                                     Cyclo::DESC => $event_desc,
+                                                     Cyclo::LOC => $event_loc,
                                                      Cyclo::STATUS => $event_status);
 //~ DEBUG
 //~ echo "Event $ecount: ($event_status) $event_summary - $event_start  -- $event_end</br>";
