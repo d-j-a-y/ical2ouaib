@@ -2,11 +2,11 @@
 /**
  * cyclodalib.php
  *
- * @package     cyclotropeLib
+ * @package     ical2ouaib
  * @author      d-j-a-y <https://cyclotrope.net>
  * @copyright   Copyright (C) 2022 by jb aka d-j-a-y
  * @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
- * @link
+ * @link        https://github.com/d-j-a-y/ical2ouaib
  */
 
 /**
