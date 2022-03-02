@@ -17,12 +17,12 @@ window.onclick = function(event) {
 }
 
 /* display modal event popup info : H3 + P */
-function cyclopopupeventinfo(title, info){
+function cyclopopupeventinfo(title, start, end, info){
   modal.style.display = "block";
   element = document.getElementById("myModalTitle");
   element.innerText = title;
   element = document.getElementById("myModalText");
-  element.innerText = info;  
+  element.innerText = "De " + start + " à " + end + "\n\n" + info;
 }
 
 /* add new event to the calendar object */

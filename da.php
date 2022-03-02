@@ -116,7 +116,10 @@ function cyclo_getAgendaAutres()
                     //~ prev: 'Mois précédent',
                 },
                 eventClick: function(info) { //https://fullcalendar.io/docs/eventClick
-                    cyclopopupeventinfo(info.event.title, info.event.extendedProps.description);
+                    cyclopopupeventinfo(info.event.title,
+                                        info.event.start.getHours()+"h"+String(info.event.start.getMinutes()).padStart(2, '0') ,
+                                        info.event.end.getHours()+"h"+String(info.event.end.getMinutes()).padStart(2, '0') ,
+                                        info.event.extendedProps.description);
 //~ alert(info.event.title + '\n\n' + info.event.extendedProps.description); //DEBUG
 
 //~ alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
