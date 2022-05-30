@@ -1,5 +1,5 @@
-# da.php
-##### formelly cyclotrope.net/agen/da.php
+# ical2ouaib
+##### physically cyclotrope.net/agen/da.php
 
 Parse cyclotrope iCalendars data and display somehow
 

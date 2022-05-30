@@ -17,7 +17,6 @@
 /**
  * TODO
  * dot utf
- * da.css
  * multiple event sources /https://stackoverflow.com/questions/20071119/fullcalendar-and-multiple-event-sources
  * Use fullcalendar keywords -title.start...- directly in cyclodalib???
  * Remplace getAgendaXXX fnct by table [name/url/color]
@@ -69,6 +68,12 @@ function cyclo_getAgendaMontjoye()
 function cyclo_getAgendaNissaBici22()
 {
     $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/2rCjNqKjCEpNcYAG?export";
+    return cyclo_getAgenda($icalfile);
+}
+
+function cyclo_getAgendaVieDeLasso()
+{
+    $icalfile = "https://framagenda.org/remote.php/dav/public-calendars/a9X2SY7coQ3LsS28?export";
     return cyclo_getAgenda($icalfile);
 }
 
@@ -136,6 +141,18 @@ function cyclo_getAgendaAutres()
             }
 
             var mainmenuEl = document.getElementById('main-menu');
+
+            /* VIE DE LASSO */
+            <?php
+                $icalobj = cyclo_getAgendaVieDeLasso();
+                //~ echo "<p>Nombre d'évènements trouvé : " . $icalobj->countEvents() . "</p>";
+                $calendar_table = cyclo_getEvents($icalobj);
+            ?>
+            {
+                events = <?php echo json_encode($calendar_table); ?>;
+                cycloaddevent(events, window.calendar, "Khaki");
+                mainmenuEl.innerHTML = mainmenuEl.innerHTML + "<div class=menu-entry>VieDeLasso <span style=\"color: Khaki ; font-size : xx-large\">&#xEFFA</span></div>"
+            }
 
             /* UNIV NCA */
             <?php
